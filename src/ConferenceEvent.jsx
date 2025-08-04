@@ -46,7 +46,7 @@ const ConferenceEvent = () => {
         const item = mealsItems[index];
         if (item.selected && item.type === "mealForPeople") {
             // Ensure numberOfPeople is set before toggling selection
-            const newNumnerOfPeople = item.selected ? numberOfPeople : 0;
+            const newNumberOfPeople = item.selected ? numberOfPeople : 0;
             dispatch(toggleMealSelection(index, newNumberOfPeople));
         } else {
             dispatch(toggleMealSelection(index));
@@ -57,14 +57,14 @@ const ConferenceEvent = () => {
         const items = [];
         venueItems.forEach((item) => {
             if (item.quantity > 0) {
-                items.oush({ ...item, type: "venue"});
+                items.push({ ...item, type: "venue"});
             }
         });
         avItems.forEach((item) => {
             if (item.quantity > 0 &&
-                !item.some((i) => i.name === item.name &&
+                !items.some((i) => i.name === item.name &&
                 i.type === "av")) {
-                    item.push({ ...item, type: "av" });
+                    items.push({ ...item, type: "av" });
                 }
         });
         mealsItems.forEach((item) => {
@@ -98,13 +98,13 @@ const ConferenceEvent = () => {
                         {items.map((item, index) => (
                             <tr key={index}>
                                 <td>{item.name}</td>
-                                <td>{item.cost}</td>
+                                <td>${item.cost}</td>
                                 <td>
                                     {item.type === "meals" || item.numberOfPeople 
                                     ? `For ${numberOfPeople}` : item.quantity}
                                 </td>
                                 <td>{item.type == "meals" || item.numberOfPeople 
-                                ? `${item.cost * numberOfPeople}` : `${item.cost * item.quantity}`}
+                                    ? `$${item.cost * numberOfPeople}` : `$${item.cost * item.quantity}`}
                                 </td>
                             </tr>
                         ))}
@@ -146,7 +146,7 @@ const ConferenceEvent = () => {
     };
     
     const totalCosts = {
-        venure: venueTotalCost,
+        venue: venueTotalCost,
         av: avTotalCost,
         meals: mealsTotalCost,
     };
@@ -245,12 +245,22 @@ const ConferenceEvent = () => {
                                         <div className="text"> {item.name} </div>
                                         <div> ${item.cost} </div>
                                         <div className="addons_btn">
-                                            <button className= "btn-warning" onClick={() => handleDecrementAvQuantity(index)}> &ndash;</button>
+                                            <button
+                                                className= "btn-warning" 
+                                                onClick={() => handleDecrementAvQuantity(index)}
+                                            > 
+                                                &ndash;
+                                            </button>
                                             <span className="quantity-value">{item.quantity}</span>
-                                            <button className="btn-succes" onClick={() => handleIncrementAvQuantity(index)}> &#43;</button>
+                                            <button 
+                                                className="btn-success" 
+                                                onClick={() => handleIncrementAvQuantity(index)}
+                                            > 
+                                                &#43;
+                                            </button>
                                         </div>
                                     </div>
-                                ))};
+                                ))}
                             </div>
                             <div className="total_cost">Total Cost: {avTotalCost}</div>
                         </div>
@@ -293,12 +303,12 @@ const ConferenceEvent = () => {
                                     </div>
                                 ))}
                             </div>
-                            <div className="total_cost">Total Cost: {mealsTotalCost} </div>
+                            <div className="total_cost">Total Cost: ${mealsTotalCost} </div>
                         </div>
                     </div>
                     ) : (
                         <div className="total_amount_detail">
-                            <TotalCost totalCosts={totalCosts} handleClick={handleToggleItems} ItemsDisplay={() => <ItemsDisplay items={items} />} />
+                            <TotalCost totalCosts={totalCosts} ItemsDisplay={() => <ItemsDisplay items={items} />} />
                         </div>
                     )
                 }
